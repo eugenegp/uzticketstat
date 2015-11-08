@@ -2,7 +2,6 @@
 
 namespace Booking\Loader;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 /**
  * Parse tickets from http://booking.uz.gov.ua/
@@ -16,16 +15,14 @@ class UzLoader
 
     public function load($deprtureCode, $arrivalCode, \DateTime $date)
     {
-        $process = new Process(sprintf('phantomjs %s/src/Booking/Resources/uz-data-fetcher.js', ROOT_DIR));
-        $process->run();
+        exec('phantomjs src/Booking/Resources/uz-data-fetcher.js', $rawData, $code);
 
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+        if ($code) {
+            throw new \Exception("Exit code $code");
         }
-        $rawData = explode("\n", trim($process->getOutput()));
 
         if (empty($rawData) || count($rawData) != 2) {
-            throw new \Exception("Can't init session from UZ [$rawData]");
+            throw new \Exception("Can't init session from UZ " . implode("\n", $rawData));
         }
         // TODO validate;
         $token = $rawData[0];
