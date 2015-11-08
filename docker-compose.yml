@@ -1,0 +1,21 @@
+grafana:
+  image: grafana/grafana:2.5.0
+  links:
+    - influxdb:influxdb
+  environment:
+    GF_SERVER_ROOT_URL: http://localhost
+    GF_SECURITY_ADMIN_PASSWORD: secret
+  ports:
+    - 3000:3000
+  volumes:
+    - "./grafana:/var/lib/grafana"
+
+influxdb:
+  image: tutum/influxdb:0.9
+  environment:
+    PRE_CREATE_DB: tickets
+  ports:
+    - 8083:8083
+    - 8086:8086
+  volumes:
+    - "./influxdbData:/data"
