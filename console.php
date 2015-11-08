@@ -7,7 +7,6 @@ define('INFDB_PASS', 'root');
 define('INFDB_HOST', 'localhost');
 define('INFDB_PORT', '8086');
 define('INFDB_DB', 'tickets');
-var_dump(ROOT_DIR);
 require __DIR__.'/vendor/autoload.php';
 
 use Booking\Console\Command\BookindLoadCommand;

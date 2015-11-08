@@ -15,7 +15,7 @@ class UzLoader
 
     public function load($deprtureCode, $arrivalCode, \DateTime $date)
     {
-        exec('phantomjs src/Booking/Resources/uz-data-fetcher.js', $rawData, $code);
+        exec('cd ' . ROOT_DIR . '&& docker run  -v `pwd`:/mnt/test --rm  --entrypoint=/usr/bin/phantomjs  cmfatih/phantomjs   /mnt/test/src/Booking/Resources/uz-data-fetcher.js', $rawData, $code);
 
         if ($code) {
             throw new \Exception("Exit code $code");
