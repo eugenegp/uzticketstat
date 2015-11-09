@@ -17,7 +17,11 @@ class ArrayToPoint
     {
         $accessor = PropertyAccess::createPropertyAccessor();
         $measure = [];
-        foreach($accessor->getValue($trainsList, 'value') as $train) {
+        $trains = $accessor->getValue($trainsList, 'value');
+        if (empty($trains) || !is_array($trains)) {
+          return [];
+        }
+        foreach($trains as $train) {
             $tags = [];
             $tags['train_num'] = $accessor->getValue($train, 'num');
             $tags['train_from_station_id'] = $accessor->getValue($train, 'from.station_id');
@@ -28,6 +32,8 @@ class ArrayToPoint
             $tags['train_to_station'] = $accessor->getValue($train, 'till.station');
             $tags['train_to_date'] = $accessor->getValue($train, 'till.date');
             $tags['train_to_date_rc'] = $accessor->getValue($train, 'till.src_date');
+            $date = \DateTime::createFromFormat('Y-m-d H:i:s', $tags['train_from_date_rc']);
+            $tags['train_date_day'] = $date->format('Ymd'); // need to be not date format
             foreach($accessor->getValue($train, 'types') as $type) {
                 $additionalTags = [];
                 $additionalTags['train_type_title'] = $accessor->getValue($type, 'title');
