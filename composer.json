@@ -9,6 +9,7 @@
         "symfony/process": "^2.7",
         "influxdb/influxdb-php": "dev-master",
         "symfony/property-access": "^2.7",
-        "incenteev/composer-parameter-handler": "^2.1"
+        "incenteev/composer-parameter-handler": "^2.1",
+        "videlalvaro/php-amqplib": "^2.6"
     }
 }

@@ -10,8 +10,12 @@ define('INFDB_DB', 'tickets');
 require __DIR__.'/vendor/autoload.php';
 
 use Booking\Console\Command\BookindLoadCommand;
+use Booking\Console\Command\ConsumerCommand;
+use Booking\Console\Command\ProducerCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
 $application->add(new BookindLoadCommand());
+$application->add(new ConsumerCommand());
+$application->add(new ProducerCommand());
 $application->run();

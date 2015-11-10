@@ -14,6 +14,8 @@ class InfluxDb
 
         $database = Client::fromDSN(sprintf('influxdb://%s:%s@%s:%s/%s', INFDB_USER, INFDB_PASS, INFDB_HOST, INFDB_PORT, INFDB_DB));
         $result = $database->writePoints($pointsList, Database::PRECISION_SECONDS);
-        dump($result);
+        if (!$result) {
+            throw new \Exception('Fail to insert data to InfluxDB');
+        }
     }
 }
