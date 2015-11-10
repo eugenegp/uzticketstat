@@ -4,7 +4,7 @@ namespace Booking\Queue;
 
 
 use Booking\Event\TicketEvent;
-use Booking\Worker\MqWorker;
+use Booking\Sale\SalePerson;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -30,7 +30,7 @@ class RabbitMq
     protected $channel;
 
     /**
-     * @var MqWorker
+     * @var SalePerson
      */
     private $worker;
     /**
@@ -46,7 +46,7 @@ class RabbitMq
 
     private $pass;
 
-    public function __construct($host, $port, $user, $pass, MqWorker $worker)
+    public function __construct($host, $port, $user, $pass, SalePerson $worker)
     {
         $this->host = $host;
         $this->port = $port;
@@ -57,7 +57,7 @@ class RabbitMq
     }
 
 
-    public function consume()
+    public function waitingForCall()
     {
         $this->channel->basic_consume(self::QUEUE_NAME, '', false, false, false, false, array(
             $this,
@@ -86,10 +86,10 @@ class RabbitMq
      */
     public function receive(AMQPMessage $msg)
     {
+        $event = $this->unpackMessage($msg->body);
         try {
-            $event = $this->unpackMessage($msg->body);
-            $this->worker->process($event);
             $this->reSend($event);
+            $this->worker->checkAvailableTicket($event);
         } catch (\Exception $e) {
             $time = new \DateTime();
             $error = $time->format("Y-m-d H:i:s") . ": " . $e->getMessage();
@@ -118,11 +118,10 @@ class RabbitMq
             false,
             true,
             false,
-            true,
-            true,
+            false,
+            false,
             array(
                 'x-message-ttl' => array('I', self::DELAY * 1000),   // delay in seconds to milliseconds
-                "x-expires" => array("I", self::DELAY * 1000 + 1000),
                 'x-dead-letter-exchange' => array('S', self::EXCHEAGE_NAME) // after message expiration in delay queue, move message to the right.now.queue
             )
         );
@@ -162,8 +161,9 @@ class RabbitMq
 
     private function reSend(TicketEvent $event)
     {
-        if ($event->getDate()->add(new \DateInterval('P1D')) > new \DateTime()) {
-            $this->channel->basic_publish(new AMQPMessage($this->packMessage($event)), '', self::QUEUE_WITH_DELAY_NAME); // re-parse after
+        $scheduledDate = clone $event->getDate();
+        if ($scheduledDate->add(new \DateInterval('P1D')) > new \DateTime()) {
+            $this->channel->basic_publish(new AMQPMessage($this->packMessage($event)), self::EXCHANGE_WITH_DELAY_NAME, ''); // re-parse after
         }
     }
 }

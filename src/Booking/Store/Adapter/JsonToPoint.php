@@ -1,20 +1,21 @@
 <?php
 
-namespace Booking\Adapter;
+namespace Booking\Store\Adapter;
 
 
 use InfluxDB\Point;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ArrayToPoint
+class JsonToPoint
 {
 
     /**
-     * @param array $trainsList
+     * @param string $jsonData
      * @return Point[]
      */
-    public static function convert($trainsList)
+    public function convert($jsonData)
     {
+        $trainsList = json_decode($jsonData);
         $accessor = PropertyAccess::createPropertyAccessor();
         $measure = [];
         $trains = $accessor->getValue($trainsList, 'value');

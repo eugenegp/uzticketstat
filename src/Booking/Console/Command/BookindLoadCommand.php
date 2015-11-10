@@ -2,9 +2,12 @@
 
 namespace Booking\Console\Command;
 
-use Booking\Loader\UzLoader;
-use Booking\Processor\InfluxDb;
-use Booking\Processor\TicketProcessor;
+use Booking\Event\TicketEvent;
+use Booking\Schedule\Operator;
+use Booking\Store\Adapter\JsonToPoint;
+use Booking\Store\InfluxStore;
+use Booking\Sale\SalePerson;
+use Booking\Token\Api\TokenApiClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +19,7 @@ class BookindLoadCommand extends Command
     {
         $this
             ->setName('loader:uz')
-            ->setDescription('Check tickets on active order')
+            ->setDescription('DEPRECATED. Check tickets on active order')
             ->addArgument('from', InputArgument::REQUIRED, 'From station')
             ->addArgument('to', InputArgument::REQUIRED, 'To station')
             ->addArgument('date', InputArgument::REQUIRED, 'Travel date')
@@ -27,8 +30,11 @@ class BookindLoadCommand extends Command
     {
 
         $dateTime = new \DateTime($input->getArgument('date'));
-        $processor = new TicketProcessor(new UzLoader(), new InfluxDb());
-        $processor->checkAvailableTicket($input->getArgument('from'), $input->getArgument('to'), $dateTime);
+        $event = new TicketEvent($input->getArgument('from'), $input->getArgument('to'), $dateTime);
+        $salePerson = new SalePerson(
+            new Operator(new TokenApiClient(API_URI)),
+            new InfluxStore(new JsonToPoint()));
+        $salePerson->checkAvailableTicket($event);
     }
 
 }
