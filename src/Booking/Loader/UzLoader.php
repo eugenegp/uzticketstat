@@ -11,7 +11,13 @@ class UzLoader
 
     const URL = 'http://booking.uz.gov.ua/ru/purchase/search/';
     const REFERER = 'http://booking.uz.gov.ua/ru/';
-    const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454.101 Chrome/45.0.2454.101 Safari/537.36';
+    private $userAgents = [
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454.101 Chrome/45.0.2454.101 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1',
+        'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A',
+        'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25',
+    ];
 
     public function load($deprtureCode, $arrivalCode, \DateTime $date)
     {
@@ -45,7 +51,7 @@ class UzLoader
         $response = $client->post(self::URL, [
             'form_params' => $sendData,
             'headers' => [
-                'User-Agent' => self::USER_AGENT,
+                'User-Agent' => $this->userAgents[rand(0,count($this->userAgents) - 1)],
                 'referer'     => self::REFERER,
                 'Cookie' => "_gv_sessid=$session; path=/",
                 'Accept-Encoding' => 'gzip, deflate, sdch',
