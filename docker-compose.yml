@@ -11,6 +11,7 @@ grafana:
     - "./grafana:/var/lib/grafana"
 
 influxdb:
+  hostname: influxdb
   image: tutum/influxdb:0.9
   environment:
     PRE_CREATE_DB: tickets
@@ -21,6 +22,7 @@ influxdb:
     - "./influxdbData:/data"
 
 amqp:
+  hostname: rabbitmq
   image: rabbitmq:management
   ports:
     - 15672:15672
@@ -29,3 +31,5 @@ amqp:
     RABBITMQ_NODENAME: test
     RABBITMQ_DEFAULT_USER: guest
     RABBITMQ_DEFAULT_PASS: guest
+  volumes:
+    - "./rabbitmq:/var/lib/rabbitmq"
