@@ -7,9 +7,10 @@
         "symfony/console": "^2.7",
         "symfony/var-dumper": "^2.7",
         "symfony/process": "^2.7",
-        "influxdb/influxdb-php": "dev-master",
+        "influxdb/influxdb-php": "^1",
         "symfony/property-access": "^2.7",
         "incenteev/composer-parameter-handler": "^2.1",
         "videlalvaro/php-amqplib": "^2.6"
-    }
+    },
+    "minimum-stability": "stable"
 }
