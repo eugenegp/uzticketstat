@@ -3,18 +3,25 @@
 namespace Booking\Token\Api;
 
 use Booking\Token\Credentials;
+use Booking\Token\Statistics;
 
 class TokenApiClient
 {
     private $uri;
+    /**
+     * @var Statistics
+     */
+    private $statistic;
 
     /**
      * TokenApi constructor.
      * @param $uri
+     * @param Statistics $statistic
      */
-    public function __construct($uri)
+    public function __construct($uri, Statistics $statistic)
     {
         $this->uri = $uri;
+        $this->statistic = $statistic;
     }
 
     /**
@@ -30,6 +37,7 @@ class TokenApiClient
         if (false == $data || !isset($data['token']) || !isset($data['session'])) {
             throw new \Exception('Token and session data is incorrect');
         }
+        $this->statistic->storeTokenUsage();
         return new Credentials($data['token'], $data['session']);
     }
 }

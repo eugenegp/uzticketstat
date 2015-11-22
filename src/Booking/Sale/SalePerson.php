@@ -6,6 +6,7 @@ namespace Booking\Sale;
 use Booking\Event\TicketEvent;
 use Booking\Schedule\Operator;
 use Booking\Store\InfluxStore;
+use InfluxDB\Point;
 
 class SalePerson
 {
@@ -41,5 +42,17 @@ class SalePerson
             $event->getDate()
         );
         $this->store->writeJsonData($trainsData);
+
+        $this->store->writePoints(
+            [new Point(
+                'ticket.uz.request',
+                1,
+                [
+                    'from' => $event->getFromStationId(),
+                    'to' => $event->getToStationId(),
+                    'date' => $event->getDate()->format('Y-m-d'),
+                ]
+            )]
+        );
     }
 }

@@ -8,6 +8,7 @@ use Booking\Store\Adapter\JsonToPoint;
 use Booking\Store\InfluxStore;
 use Booking\Sale\SalePerson;
 use Booking\Token\Api\TokenApiClient;
+use Booking\Token\Statistics;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,9 +32,10 @@ class BookindLoadCommand extends Command
 
         $dateTime = new \DateTime($input->getArgument('date'));
         $event = new TicketEvent($input->getArgument('from'), $input->getArgument('to'), $dateTime);
+        $store = new InfluxStore(new JsonToPoint());
         $salePerson = new SalePerson(
-            new Operator(new TokenApiClient(API_URI)),
-            new InfluxStore(new JsonToPoint()));
+            new Operator(new TokenApiClient(API_URI, new Statistics($store))),
+            $store);
         $salePerson->checkAvailableTicket($event);
     }
 
