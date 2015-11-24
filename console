@@ -1,19 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-define('ROOT_DIR', realpath(__DIR__));
-
-define('INFDB_USER', 'root');
-define('INFDB_PASS', 'root');
-define('INFDB_HOST', 'influxdb');
-define('INFDB_PORT', '8086');
-define('INFDB_DB', 'tickets');
-
-define('MQ_HOST', 'amqp');
-define('MQ_PORT', 5672);
-
-define('API_URI', 'http://tokenapi:8666');
-
 require __DIR__.'/vendor/autoload.php';
 
 use Booking\BookingApplication;

@@ -1,0 +1,13 @@
+parameters:
+  token.api.uri: http://tokenapi:8666
+  rabbit.host: amqp
+  rabbit.port: 5672
+  rabbit.user: guest
+  rabbit.password: guest
+
+  influxdb.host: influxdb
+  influxdb.port: 8086
+  influxdb.db: tickets
+  influxdb.user: root
+  influxdb.password: root
+

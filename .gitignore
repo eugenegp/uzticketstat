@@ -4,3 +4,4 @@ grafana/
 influxdbData/
 rabbitmq/
 vendor/
+parameters.yml

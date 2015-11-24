@@ -1,15 +1,21 @@
-parameters:
-  token.api.uri: http://tokenapi:8666
-  rabbit.host: amqp
-  rabbit.port: 5672
-  rabbit.user: guest
-  rabbit.password: guest
+imports:
+  - { resource: parameters.yml }
 
 services:
+  influx.connection:
+    class: Booking\Store\Connection
+    arguments:
+      - %influxdb.host%
+      - %influxdb.port%
+      - %influxdb.user%
+      - %influxdb.password%
+      - %influxdb.db%
+
   influx.store:
     class: Booking\Store\InfluxStore
     arguments:
       - @influx.point.adapter
+      - @influx.connection
 
   influx.point.adapter:
     class: Booking\Store\Adapter\JsonToPoint

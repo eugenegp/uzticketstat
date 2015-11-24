@@ -13,16 +13,18 @@ class InfluxStore
      */
     private $adapter;
 
-    /** @var  \InfluxDB\Database */
+    /** @var  Connection */
     private $connection;
 
     /**
      * InfluxStore constructor.
      * @param JsonToPoint $adapter
+     * @param Connection $connection
      */
-    public function __construct(JsonToPoint $adapter)
+    public function __construct(JsonToPoint $adapter, Connection $connection)
     {
         $this->adapter = $adapter;
+        $this->connection = $connection;
     }
 
     public function writeJsonData($jsonData)
@@ -33,11 +35,7 @@ class InfluxStore
             return;
         }
 
-        if (!$this->connection) {
-            $this->connect();
-        }
-
-        $result = $this->connection->writePoints($pointsList, Database::PRECISION_SECONDS);
+        $result = $this->getConnect()->writePoints($pointsList, Database::PRECISION_SECONDS);
         if (!$result) {
             throw new \Exception('Fail to insert data to InfluxDB');
         }
@@ -45,18 +43,14 @@ class InfluxStore
 
     public function writePoints(array $points)
     {
-        if (!$this->connection) {
-            $this->connect();
-        }
-
-        $result = $this->connection->writePoints($points, Database::PRECISION_SECONDS);
+        $result = $this->getConnect()->writePoints($points, Database::PRECISION_SECONDS);
         if (!$result) {
             throw new \Exception('Fail to insert data to InfluxDB');
         }
     }
 
-    private function connect()
+    private function getConnect()
     {
-        $this->connection = Client::fromDSN(sprintf('influxdb://%s:%s@%s:%s/%s', INFDB_USER, INFDB_PASS, INFDB_HOST, INFDB_PORT, INFDB_DB));
+        return $this->connection->getConnect();
     }
 }

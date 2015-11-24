@@ -24,7 +24,7 @@ class BookingApplication extends  Application
     {
         $container = new ContainerBuilder();
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__));
-        $loader->load('config/services.yml');
+        $loader->load('../../app/config/services.yml');
         $this->container = $container;
     }
 

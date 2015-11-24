@@ -14,5 +14,19 @@
         "symfony/dependency-injection": "^2.7",
         "symfony/config": "^2.7"
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ]
+    },
+    "extra": {
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml",
+            "dist-file": "app/config/parameters.yml.dist"
+        }
+    }
 }
