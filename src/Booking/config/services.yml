@@ -1,0 +1,46 @@
+parameters:
+  token.api.uri: http://tokenapi:8666
+  rabbit.host: amqp
+  rabbit.port: 5672
+  rabbit.user: guest
+  rabbit.password: guest
+
+services:
+  influx.store:
+    class: Booking\Store\InfluxStore
+    arguments:
+      - @influx.point.adapter
+
+  influx.point.adapter:
+    class: Booking\Store\Adapter\JsonToPoint
+
+  sale:
+    class: Booking\Sale\SalePerson
+    arguments:
+      - @operator
+      - @influx.store
+
+  operator:
+    class: Booking\Schedule\Operator
+    arguments:
+      - @token.api.client
+
+  token.api.client:
+    class: Booking\Token\Api\TokenApiClient
+    arguments:
+      - %token.api.uri%
+      - @token.statistic
+
+  token.statistic:
+    class: Booking\Token\Statistics
+    arguments:
+      - @influx.store
+
+  queue:
+    class: Booking\Queue\RabbitMq
+    arguments:
+      - %rabbit.host%
+      - %rabbit.port%
+      - %rabbit.user%
+      - %rabbit.password%
+      - @sale

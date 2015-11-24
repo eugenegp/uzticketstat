@@ -10,7 +10,9 @@
         "influxdb/influxdb-php": "^1",
         "symfony/property-access": "^2.7",
         "incenteev/composer-parameter-handler": "^2.1",
-        "videlalvaro/php-amqplib": "^2.6"
+        "videlalvaro/php-amqplib": "^2.6",
+        "symfony/dependency-injection": "^2.7",
+        "symfony/config": "^2.7"
     },
     "minimum-stability": "stable"
 }

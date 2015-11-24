@@ -16,12 +16,12 @@ define('API_URI', 'http://tokenapi:8666');
 
 require __DIR__.'/vendor/autoload.php';
 
+use Booking\BookingApplication;
 use Booking\Console\Command\BookindLoadCommand;
 use Booking\Console\Command\SalePersonCommand;
 use Booking\Console\Command\MonitorCommand;
-use Symfony\Component\Console\Application;
 
-$application = new Application();
+$application = new BookingApplication();
 $application->add(new BookindLoadCommand());
 $application->add(new SalePersonCommand());
 $application->add(new MonitorCommand());
