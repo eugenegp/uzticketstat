@@ -14,17 +14,18 @@ services:
   influx.store:
     class: Booking\Store\InfluxStore
     arguments:
-      - @influx.point.adapter
       - @influx.connection
 
-  influx.point.adapter:
-    class: Booking\Store\Adapter\JsonToPoint
+  uz.train_adapter:
+    class: Booking\Store\Adapter\UzDataAtapter
 
   sale:
     class: Booking\Sale\SalePerson
     arguments:
       - @operator
       - @influx.store
+      - @uz.train_adapter
+
 
   operator:
     class: Booking\Schedule\Operator

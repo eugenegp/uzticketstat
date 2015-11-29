@@ -6,7 +6,7 @@ namespace Booking\Store\Adapter;
 use InfluxDB\Point;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class JsonToPoint
+class UzDataAtapter
 {
 
     /**
@@ -39,11 +39,11 @@ class JsonToPoint
                 $additionalTags = [];
                 $additionalTags['train_type_title'] = $accessor->getValue($type, 'title');
                 $additionalTags['train_type_letter'] = $accessor->getValue($type, 'letter');
-                $measure[] = new Point(
-                    'tickets.amount',
-                    $accessor->getValue($type, 'places'),
-                    array_merge($tags, $additionalTags)
-                );
+                $measure[] = [
+                    'measure' => 'tickets.amount',
+                    'value' => $accessor->getValue($type, 'places'),
+                    'tags' => array_merge($tags, $additionalTags),
+                ];
             }
         }
         return $measure;

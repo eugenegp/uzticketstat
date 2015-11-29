@@ -1,41 +1,28 @@
 <?php
 
-namespace  Booking\Store;
+namespace Booking\Store;
 
-use Booking\Store\Adapter\JsonToPoint;
 use InfluxDB\Client;
 use InfluxDB\Database;
 
 class InfluxStore
 {
-    /**
-     * @var JsonToPoint
-     */
-    private $adapter;
 
     /** @var  Connection */
     private $connection;
 
     /**
      * InfluxStore constructor.
-     * @param JsonToPoint $adapter
      * @param Connection $connection
      */
-    public function __construct(JsonToPoint $adapter, Connection $connection)
+    public function __construct(Connection $connection)
     {
-        $this->adapter = $adapter;
         $this->connection = $connection;
     }
 
-    public function writeJsonData($jsonData)
+    public function write(array $points)
     {
-        $pointsList = $this->adapter->convert($jsonData);
-
-        if (empty($pointsList)) {
-            return;
-        }
-
-        $result = $this->getConnect()->writePoints($pointsList, Database::PRECISION_SECONDS);
+        $result = $this->getConnect()->writePoints($points, Database::PRECISION_SECONDS);
         if (!$result) {
             throw new \Exception('Fail to insert data to InfluxDB');
         }
@@ -49,8 +36,15 @@ class InfluxStore
         }
     }
 
+    public function query($query)
+    {
+        return $this->getConnect()->query($query);
+    }
+
+
     private function getConnect()
     {
         return $this->connection->getConnect();
     }
+
 }
